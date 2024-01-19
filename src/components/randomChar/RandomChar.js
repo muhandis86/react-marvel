@@ -28,7 +28,6 @@ class RandomChar extends Component {
 
     render() {
         const { char: { name, description, thumbnail, homepage, wiki } } = this.state;
-        const validDescr = description !== '' ? description : 'description not found';
 
         return (
             <div className="randomchar">
@@ -37,7 +36,7 @@ class RandomChar extends Component {
                     <div className="randomchar__info">
                         <p className="randomchar__name">{name}</p>
                         <p className="randomchar__descr">
-                            {validDescr}
+                            {description}
                         </p>
                         <div className="randomchar__btns">
                             <a href={homepage} className="button button__main">
