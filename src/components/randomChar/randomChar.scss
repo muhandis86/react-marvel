@@ -31,11 +31,18 @@
         font-size: 22px;
         line-height: 29px;
         text-transform: uppercase;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     &__descr {
         font-size: 14px;
         line-height: 18px;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 5;
+        overflow: hidden;
     }
 
     &__btns {
