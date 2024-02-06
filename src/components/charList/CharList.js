@@ -58,6 +58,15 @@ class CharList extends Component {
         })
     }
 
+    selectCharByKey = (event, id) => {
+        if (event.type === 'click' || event.key === 'Enter' || event.key === ' ') {
+            this.props.onCharSelected(id);
+        }
+        if (event.key === 'Escape') {
+            event.target.blur();
+        }
+    }
+
     renderItems(arr) {
         const items = arr.map(item => {
             const isImg = item.thumbnail.includes('image_not_available') ? true : false;
@@ -67,6 +76,8 @@ class CharList extends Component {
                 <li
                     className="char__item"
                     key={item.id}
+                    tabIndex={0}
+                    onKeyDown={(e) => this.selectCharByKey(e, item.id)}
                     onClick={() => this.props.onCharSelected(item.id)}>
                     <img src={item.thumbnail} alt={item.name} style={imgStyle} />
                     <div className="char__name">{item.name}</div>
