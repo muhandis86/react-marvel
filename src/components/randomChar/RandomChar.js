@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
-import MarvelService from '../../services/MarvelService';
+import useMarvelService from '../../services/MarvelService';
 
 import './randomChar.scss';
 import mjolnir from '../../resources/img/mjolnir.png';
@@ -9,41 +9,26 @@ import mjolnir from '../../resources/img/mjolnir.png';
 const RandomChar = () => {
 
     const [char, setChar] = useState({});
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
-
-    const marvelService = new MarvelService();
+    const { loading, error, getCharacter, clearError } = useMarvelService();
 
     useEffect(() => {
         updateChar();
-        const timerId = setInterval(updateChar, 6000);
+        const timerId = setInterval(updateChar, 10000);
 
         return () => {
             clearInterval(timerId)
         }
     }, []);
 
-    const updateChar = () => {
-        const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000);
-        onCharLoading();
-        marvelService
-            .getCharacter(id)
-            .then(onCharLoaded)
-            .catch(onError)
-    }
-
     const onCharLoaded = (char) => {
         setChar(char);
-        setLoading(false);
     }
 
-    const onCharLoading = () => {
-        setLoading(true);
-    }
-
-    const onError = () => {
-        setError(true);
-        setLoading(false);
+    const updateChar = () => {
+        clearError();
+        const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000);
+        getCharacter(id)
+            .then(onCharLoaded);
     }
 
     const errorMessage = error ? <ErrorMessage /> : null;
@@ -74,7 +59,7 @@ const RandomChar = () => {
 
 const View = ({ char }) => {
     const { name, description, thumbnail, homepage, wiki } = char;
-    const isImg = thumbnail.includes('image_not_available') ? true : false;
+    const isImg = thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg';
     const imgStyle = isImg ? { objectFit: 'contain' } : null;
 
     return (
