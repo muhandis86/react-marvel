@@ -2,6 +2,7 @@ import { useState } from "react";
 import AppHeader from "../appHeader/AppHeader";
 import RandomChar from "../randomChar/RandomChar";
 import CharList from "../charList/CharList";
+import ComicsList from "../comicsList/ComicsList";
 import CharInfo from "../charInfo/CharInfo";
 import ErrorBoundary from "../errorBoundary/ErrorBoundary";
 
@@ -19,7 +20,8 @@ const App = () => {
         <div className="app">
             <AppHeader />
             <main>
-                <ErrorBoundary>
+                <ComicsList />
+                {/* <ErrorBoundary>
                     <RandomChar />
                 </ErrorBoundary>
                 <div className="char__content">
@@ -30,7 +32,7 @@ const App = () => {
                         <CharInfo charId={selectedChar} />
                     </ErrorBoundary>
                 </div>
-                <img className="bg-decoration" src={decoration} alt="vision" />
+                <img className="bg-decoration" src={decoration} alt="vision" /> */}
             </main>
         </div>
     )
