@@ -1,4 +1,4 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
 import useMarvelService from '../../services/MarvelService';
@@ -43,6 +43,11 @@ const SingleComicPage = () => {
 
 const View = ({ comic }) => {
     const { title, description, thumbnail, price, pageCount, language } = comic;
+    const navigate = useNavigate();
+
+    const goBack = () => {
+        navigate(-1);
+    }
 
     return (
         <div className="single-comic">
@@ -54,7 +59,7 @@ const View = ({ comic }) => {
                 <p className="single-comic__descr">Language: {language}</p>
                 <div className="single-comic__price">{price}</div>
             </div>
-            <Link to="/comics" className="single-comic__back">Back to all</Link>
+            <Link onClick={goBack} className="single-comic__back">Back to all</Link>
         </div>
     )
 }
