@@ -3,6 +3,7 @@ import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import useMarvelService from '../../services/MarvelService';
 import PropTypes from 'prop-types';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 import './charList.scss';
 
@@ -53,21 +54,25 @@ const CharList = (props) => {
             const imgStyle = isImg ? { objectFit: 'contain' } : null;
 
             return (
-                <li
-                    className="char__item"
-                    key={item.id}
-                    tabIndex={0}
-                    onKeyDown={(e) => selectCharByKey(e, item.id)}
-                    onClick={() => props.onCharSelected(item.id)}>
-                    <img src={item.thumbnail} alt={item.name} style={imgStyle} />
-                    <div className="char__name">{item.name}</div>
-                </li>
+                <CSSTransition key={item.id} timeout={500} classNames="char__item">
+                    <li
+                        className="char__item"
+                        key={item.id}
+                        tabIndex={0}
+                        onKeyDown={(e) => selectCharByKey(e, item.id)}
+                        onClick={() => props.onCharSelected(item.id)}>
+                        <img src={item.thumbnail} alt={item.name} style={imgStyle} />
+                        <div className="char__name">{item.name}</div>
+                    </li>
+                </CSSTransition>
             )
         })
 
         return (
             <ul className="char__grid">
-                {items}
+                <TransitionGroup component={null}>
+                    {items}
+                </TransitionGroup>
             </ul>
         )
     }
