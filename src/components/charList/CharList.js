@@ -26,13 +26,20 @@ const CharList = (props) => {
             .then(onCharListLoaded)
     }
 
-    const onCharListLoaded = (newCharList) => {
+    const onCharListLoaded = async (newCharList) => {
         let ended = false;
         if (newCharList.length < 9) {
             ended = true;
         }
 
-        setCharList(charList => [...charList, ...newCharList]);
+        const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+        for (let char of newCharList) {
+            await delay(350);
+            setCharList(charList => [...charList, char]);
+        }
+
+        // setCharList(charList => [...charList, ...newCharList]);
         setRequestLoading(requestLoading => false);
         setOffset(offset => offset + 9);
         setCharEnded(charEnded => ended);

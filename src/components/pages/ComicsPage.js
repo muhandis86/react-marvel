@@ -5,7 +5,7 @@ const ComicsPage = () => {
 
     return (
         <>
-            <AppBanner />
+            {/* <AppBanner /> */}
             <ComicsList />
         </>
     )
