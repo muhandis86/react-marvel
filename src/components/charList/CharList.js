@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import useMarvelService from '../../services/MarvelService';
@@ -12,16 +12,12 @@ const setContent = (process, Component, requestLoading) => {
     switch (process) {
         case 'waiting':
             return <Spinner />;
-            break;
         case 'loading':
             return requestLoading ? <Component /> : <Spinner />;
-            break;
         case 'confirmed':
             return <Component />;
-            break;
         case 'error':
             return <ErrorMessage />;
-            break;
         default:
             throw new Error('Unexpected process state')
     }
@@ -105,9 +101,13 @@ const CharList = (props) => {
         )
     }
 
+    const elements = useMemo(() => {
+        return setContent(process, () => renderItems(charList), requestLoading);
+    }, [process])
+
     return (
         <div className="char__list">
-            {setContent(process, () => renderItems(charList), requestLoading)}
+            {elements}
             <button
                 className="button button__main button__long"
                 disabled={requestLoading}

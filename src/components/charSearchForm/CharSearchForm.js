@@ -11,16 +11,12 @@ const setContent = (process, Component, data, charNotFinded) => {
     switch (process) {
         case 'waiting':
             return;
-            break;
         case 'loading':
             return;
-            break;
         case 'confirmed':
             return !charNotFinded ? <Component data={data} /> : <CharNotFinded />;
-            break;
         case 'error':
             return <ErrorMessage />;
-            break;
         default:
             throw new Error('Unexpected process state')
     }
