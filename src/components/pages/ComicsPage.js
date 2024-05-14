@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet";
 
+import AppBanner from "../appBanner/AppBanner";
 import ComicsList from "../comicsList/ComicsList";
 
 const ComicsPage = () => {
@@ -13,6 +14,7 @@ const ComicsPage = () => {
                 />
                 <title>Comics page</title>
             </Helmet>
+            <AppBanner />
             <ComicsList />
         </>
     )

@@ -2,10 +2,30 @@ import { useState, useEffect } from 'react';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import useMarvelService from '../../services/MarvelService';
+
 import PropTypes from 'prop-types';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 import './charList.scss';
+
+const setContent = (process, Component, requestLoading) => {
+    switch (process) {
+        case 'waiting':
+            return <Spinner />;
+            break;
+        case 'loading':
+            return requestLoading ? <Component /> : <Spinner />;
+            break;
+        case 'confirmed':
+            return <Component />;
+            break;
+        case 'error':
+            return <ErrorMessage />;
+            break;
+        default:
+            throw new Error('Unexpected process state')
+    }
+}
 
 const CharList = (props) => {
 
@@ -14,7 +34,7 @@ const CharList = (props) => {
     const [offset, setOffset] = useState(210);
     const [charEnded, setCharEnded] = useState(false);
 
-    const { loading, error, getAllCharacters } = useMarvelService();
+    const { process, setProcess, getAllCharacters } = useMarvelService();
 
     useEffect(() => {
         onRequestMore(offset, true);
@@ -24,6 +44,7 @@ const CharList = (props) => {
         initial ? setRequestLoading(false) : setRequestLoading(true);
         getAllCharacters(offset)
             .then(onCharListLoaded)
+            .then(() => setProcess('confirmed'))
     }
 
     const onCharListLoaded = async (newCharList) => {
@@ -32,14 +53,14 @@ const CharList = (props) => {
             ended = true;
         }
 
-        const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+        // const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-        for (let char of newCharList) {
-            await delay(350);
-            setCharList(charList => [...charList, char]);
-        }
+        // for (let char of newCharList) {
+        //     await delay(350);
+        //     setCharList(charList => [...charList, char]);
+        // }
 
-        // setCharList(charList => [...charList, ...newCharList]);
+        setCharList(charList => [...charList, ...newCharList]);
         setRequestLoading(requestLoading => false);
         setOffset(offset => offset + 9);
         setCharEnded(charEnded => ended);
@@ -84,15 +105,9 @@ const CharList = (props) => {
         )
     }
 
-    const items = renderItems(charList);
-    const errorMessage = error ? <ErrorMessage /> : null;
-    const spinner = loading && !requestLoading ? <Spinner /> : null;
-
     return (
         <div className="char__list">
-            {errorMessage}
-            {spinner}
-            {items}
+            {setContent(process, () => renderItems(charList), requestLoading)}
             <button
                 className="button button__main button__long"
                 disabled={requestLoading}

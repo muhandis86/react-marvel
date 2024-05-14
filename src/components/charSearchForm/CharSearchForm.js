@@ -7,17 +7,37 @@ import useMarvelService from '../../services/MarvelService';
 
 import "./charSearchForm.scss";
 
+const setContent = (process, Component, data, charNotFinded) => {
+    switch (process) {
+        case 'waiting':
+            return;
+            break;
+        case 'loading':
+            return;
+            break;
+        case 'confirmed':
+            return !charNotFinded ? <Component data={data} /> : <CharNotFinded />;
+            break;
+        case 'error':
+            return <ErrorMessage />;
+            break;
+        default:
+            throw new Error('Unexpected process state')
+    }
+}
+
 const CharSearchForm = () => {
 
     const [char, setChar] = useState(null);
     const [charNotFinded, setCharNotFinded] = useState(false);
 
-    const { loading, getCharacterByName, clearError } = useMarvelService();
+    const { process, setProcess, getCharacterByName, clearError } = useMarvelService();
 
     const updateChar = (name) => {
         clearError();
         getCharacterByName(name)
-            .then(onCharLoaded);
+            .then(onCharLoaded)
+            .then(() => setProcess('confirmed'))
     }
 
     const onCharLoaded = (char) => {
@@ -28,9 +48,6 @@ const CharSearchForm = () => {
             setCharNotFinded(false);
         }
     }
-
-    const content = char && !charNotFinded ? <CharFinded char={char} /> : null;
-    const error = charNotFinded ? <CharNotFinded /> : null;
 
     return (
         <Formik
@@ -55,24 +72,25 @@ const CharSearchForm = () => {
                     <button
                         type="submit"
                         className="button button__main"
-                        disabled={loading}>
+                    >
                         <div className="inner">find</div>
                     </button>
                 </div>
                 <ErrorMessage className='char__form-error' name='charName' component="div" />
-                {content}
-                {error}
+                {setContent(process, CharFinded, char, charNotFinded)}
             </Form>
         </Formik>
     )
 }
 
-const CharFinded = ({ char }) => {
+const CharFinded = ({ data }) => {
+
+    const { name, id } = data;
 
     return (
         <div className='char__form-finded'>
-            <p>There is! Visit {char.name} page? </p>
-            <Link to={`/characters/${char.id}`}
+            <p>There is! Visit {name} page? </p>
+            <Link to={`/characters/${id}`}
                 className="button button__secondary">
                 <div className="inner">to page</div>
             </Link>
